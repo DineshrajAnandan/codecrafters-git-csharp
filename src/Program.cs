@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using codecrafters_git.Helpers;
 
 if (args.Length < 1)
 {
@@ -21,6 +22,17 @@ if (command == "init")
     Directory.CreateDirectory(".git/refs");
     File.WriteAllText(".git/HEAD", "ref: refs/heads/main\n");
     Console.WriteLine("Initialized git directory");
+}
+
+if (command == "cat-file")
+{
+    var fileSha = args[2];
+    var dirName = fileSha[..2];
+    var fileName = fileSha[2..];
+    var filePath = Path.Combine(".git/objects", dirName, fileName);
+    var fileBytes = FileHelper.ReadAllBytes(filePath);
+    var content = ZlibHelper.DecompressZlib(fileBytes);
+    Console.WriteLine(content.Split('\0').Last());
 }
 else
 {
