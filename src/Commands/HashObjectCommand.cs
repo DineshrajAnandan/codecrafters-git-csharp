@@ -10,7 +10,7 @@ public class HashObjectCommand
         var data = FileHelper.GetContent(filePath);
         var sha1 = FileHelper.CalculateSha1(filePath);
         var objectDirectory = sha1[..2];
-        var objectFileName = sha1[..2];
+        var objectFileName = sha1[2..];
         var objectFilePath = Path.Combine(".git/objects", objectDirectory, objectFileName);
         var objectContent = $"blob {data.Length}\0{data}";
         
