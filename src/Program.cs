@@ -1,6 +1,4 @@
-using System;
-using System.IO;
-using codecrafters_git.Helpers;
+using codecrafters_git.Commands;
 
 if (args.Length < 1)
 {
@@ -8,34 +6,17 @@ if (args.Length < 1)
     return;
 }
 
-// You can use print statements as follows for debugging, they'll be visible when running tests.
-Console.Error.WriteLine("Logs from your program will appear here!");
+var command = args[0];
+var commandArgs = args[1..];
 
-string command = args[0];
-
-if (command == "init")
+switch (command)
 {
-    // Uncomment this block to pass the first stage
-    //
-    Directory.CreateDirectory(".git");
-    Directory.CreateDirectory(".git/objects");
-    Directory.CreateDirectory(".git/refs");
-    File.WriteAllText(".git/HEAD", "ref: refs/heads/main\n");
-    Console.WriteLine("Initialized git directory");
-}
-
-if (command == "cat-file")
-{
-    var fileSha = args[2];
-    var dirName = fileSha[..2];
-    var fileName = fileSha[2..];
-    var filePath = Path.Combine(".git/objects", dirName, fileName);
-    var fileBytes = FileHelper.ReadAllBytes(filePath);
-    var content = ZlibHelper.DecompressZlib(fileBytes);
-    Console.Write(content.Split('\0').Last());
-    
-}
-else
-{
-    throw new ArgumentException($"Unknown command {command}");
+    case "init":
+        new InitCommand().Execute(commandArgs);
+        break;
+    case "cat-file":
+        new CatFileCommand().Execute(commandArgs);
+        break;
+    default:
+        throw new ArgumentException($"Unknown command {command}");
 }
