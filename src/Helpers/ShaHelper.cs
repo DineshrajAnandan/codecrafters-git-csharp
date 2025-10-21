@@ -1,12 +1,13 @@
 using System.Security.Cryptography;
 using System.Text;
+using codecrafters_git.Models;
 
 namespace codecrafters_git.Helpers;
 
 public class ShaHelper
 {
     
-    public static string CalculateSha1(string text)
+    public static ShaOne CalculateSha1(string text)
     {
         var data = Encoding.UTF8.GetBytes(text);
         using var sha1 = SHA1.Create();
@@ -16,6 +17,7 @@ public class ShaHelper
         {
             sb.Append(b.ToString("x2")); // "x2" formats the byte as a two-digit hexadecimal number
         }
-        return sb.ToString();
+        var shaString = sb.ToString();
+        return new ShaOne(shaString);
     }
 }

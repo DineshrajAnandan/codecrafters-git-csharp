@@ -2,6 +2,11 @@ namespace codecrafters_git.Helpers;
 
 public class FileHelper
 {
+    public static bool Exists(string filePath)
+    {
+        return File.Exists(filePath);
+    }
+    
     public static byte[] GetContentAsBytes(string filePath)
     {
         return File.ReadAllBytes(filePath);

@@ -6,7 +6,8 @@ public class CatFileCommand
 {
     public void Execute(string[] args)
     {
-        var blobObject = new BlobObject(args[1]);
+        var sha1 = new ShaOne(args[1]);
+        var blobObject = new BlobObject(sha1);
         Console.Write(blobObject.GetContent());
     }
 }
