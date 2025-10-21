@@ -12,6 +12,8 @@ public class TreeObject(ShaOne sha1) : GitObject(sha1)
         ValidateFileExists();
         
         var rawTreeData = FileHelper.GetContentFromZLib(FilePath);
+        Console.WriteLine("TREE DATA:");
+        Console.WriteLine(rawTreeData);
         var parts = SplitTreeData(rawTreeData);
         
         var entries =  ParseTreeEntries(parts);
