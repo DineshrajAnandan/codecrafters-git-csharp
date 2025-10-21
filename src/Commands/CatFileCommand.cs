@@ -10,7 +10,7 @@ public class CatFileCommand
         var dirName = fileSha[..2];
         var fileName = fileSha[2..];
         var filePath = Path.Combine(".git/objects", dirName, fileName);
-        var fileBytes = FileHelper.ReadAllBytes(filePath);
+        var fileBytes = FileHelper.GetContentAsBytes(filePath);
         var content = ZlibHelper.DecompressZlib(fileBytes);
         Console.Write(content.Split('\0').Last());
     }

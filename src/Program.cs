@@ -17,6 +17,9 @@ switch (command)
     case "cat-file":
         new CatFileCommand().Execute(commandArgs);
         break;
+    case "hash-object":
+        new HashObjectCommand().Execute(commandArgs);
+        break;
     default:
         throw new ArgumentException($"Unknown command {command}");
 }

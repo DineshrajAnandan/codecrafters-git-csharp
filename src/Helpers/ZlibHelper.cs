@@ -14,4 +14,13 @@ public class ZlibHelper
         var decompressedBytes = decompressedStream.ToArray();
         return Encoding.UTF8.GetString(decompressedBytes);
     }
+    
+    public static byte[] Compress(string textToCompress)
+    {
+        var inputBytes = Encoding.UTF8.GetBytes(textToCompress);
+        using var outputStream = new MemoryStream();
+        using var compressionStream = new ZLibStream(outputStream, CompressionMode.Compress) ;
+        compressionStream.Write(inputBytes, 0, inputBytes.Length);
+        return outputStream.ToArray();
+    }
 }

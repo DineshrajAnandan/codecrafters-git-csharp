@@ -10,7 +10,7 @@ public class InitCommand
             ".git", 
             ".git/objects", 
             ".git/refs");
-        FileHelper.WriteAllText(
+        FileHelper.Write(
             ".git/HEAD", 
             "ref: refs/heads/main\n");
         Console.WriteLine("Initialized git directory");
