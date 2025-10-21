@@ -15,7 +15,7 @@ public class HashObjectCommand
         var objectContent = $"blob {data.Length}\0{data}";
         FileHelper.CreateDirectories(Path.Combine(".git/objects", objectDirectory));
         
-        FileHelper.Write(objectFilePath, ZlibHelper.Compress(objectContent));
+        FileHelper.WriteAsZLib(objectFilePath, objectContent);
         Console.WriteLine(sha1);
     }
 }

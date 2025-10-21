@@ -50,4 +50,9 @@ public class FileHelper
     {
         File.WriteAllBytes(path, content);
     }
+
+    public static void WriteAsZLib(string path, string content)
+    {
+        ZlibHelper.CompressToFile(path, content);
+    }
 }

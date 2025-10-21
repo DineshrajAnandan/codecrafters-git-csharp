@@ -15,12 +15,11 @@ public class ZlibHelper
         return Encoding.UTF8.GetString(decompressedBytes);
     }
     
-    public static byte[] Compress(string textToCompress)
+    public static void CompressToFile(string filePath, string textToCompress)
     {
         var inputBytes = Encoding.UTF8.GetBytes(textToCompress);
-        using var outputStream = new MemoryStream();
-        using var compressionStream = new ZLibStream(outputStream, CompressionMode.Compress) ;
+        using var fileStream = new FileStream(filePath, FileMode.Create);
+        using var compressionStream = new ZLibStream(fileStream, CompressionMode.Compress) ;
         compressionStream.Write(inputBytes, 0, inputBytes.Length);
-        return outputStream.ToArray();
     }
 }
