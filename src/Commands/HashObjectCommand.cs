@@ -7,6 +7,6 @@ public class HashObjectCommand
     public void Execute(string[] args)
     {
         var blobObject = BlobObject.CreateFromFile(args[1]);
-        Console.WriteLine(blobObject.ShaOne);
+        Console.WriteLine(blobObject.Sha1);
     }
 }

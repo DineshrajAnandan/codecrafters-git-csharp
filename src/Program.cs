@@ -20,6 +20,9 @@ switch (command)
     case "hash-object":
         new HashObjectCommand().Execute(commandArgs);
         break;
+    case "ls-tree":
+        new LsTreeCommand().Execute(commandArgs);
+        break;
     default:
         throw new ArgumentException($"Unknown command {command}");
 }
