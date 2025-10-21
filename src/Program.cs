@@ -33,6 +33,7 @@ if (command == "cat-file")
     var fileBytes = FileHelper.ReadAllBytes(filePath);
     var content = ZlibHelper.DecompressZlib(fileBytes);
     Console.WriteLine(content.Split('\0').Last());
+    
 }
 else
 {
