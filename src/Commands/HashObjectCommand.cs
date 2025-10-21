@@ -16,5 +16,6 @@ public class HashObjectCommand
         FileHelper.CreateDirectories(Path.Combine(".git/objects", objectDirectory));
         
         FileHelper.Write(objectFilePath, ZlibHelper.Compress(objectContent));
+        Console.WriteLine(sha1);
     }
 }
