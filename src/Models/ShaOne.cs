@@ -36,6 +36,7 @@ public class ShaOne
 
     public static ShaOne ParseFromBase64(string base64String)
     {
+        Console.WriteLine(base64String);
         var hashBytes = Convert.FromBase64String(base64String);
         return Parse(hashBytes);
         
