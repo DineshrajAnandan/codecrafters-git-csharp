@@ -34,4 +34,9 @@ public class FileHelper
     {
         ZlibHelper.CompressToFile(path, content);
     }
+    
+    public static string GetContentFromZLib(string path)
+    {
+        return ZlibHelper.DecompressFile(path);
+    }
 }

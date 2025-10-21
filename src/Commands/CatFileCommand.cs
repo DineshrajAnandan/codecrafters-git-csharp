@@ -1,4 +1,4 @@
-using codecrafters_git.Helpers;
+using codecrafters_git.Models;
 
 namespace codecrafters_git.Commands;
 
@@ -6,12 +6,7 @@ public class CatFileCommand
 {
     public void Execute(string[] args)
     {
-        var fileSha = args[1];
-        var dirName = fileSha[..2];
-        var fileName = fileSha[2..];
-        var filePath = Path.Combine(".git/objects", dirName, fileName);
-        var fileBytes = FileHelper.GetContentAsBytes(filePath);
-        var content = ZlibHelper.DecompressZlib(fileBytes);
-        Console.Write(content.Split('\0').Last());
+        var blobObject = new BlobObject(args[1]);
+        Console.Write(blobObject.GetContent());
     }
 }
