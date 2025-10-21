@@ -11,13 +11,9 @@ public class TreeObject(ShaOne sha1) : GitObject(sha1)
     {
         ValidateFileExists();
         
-        var rawTreeData = FileHelper.GetContentFromZLib(FilePath);
-        Console.WriteLine("TREE DATA:");
-        Console.WriteLine(rawTreeData);
-        var parts = SplitTreeData(rawTreeData);
+        var rawBytes = FileHelper.GetBytesFromZLib(FilePath);
         
-        var entries =  ParseTreeEntries(parts);
-        return entries.OrderBy(entry => entry.Name).ToList();
+        return ParseTreeEntries(rawBytes);
     }
 
     private void ValidateFileExists()
@@ -26,19 +22,16 @@ public class TreeObject(ShaOne sha1) : GitObject(sha1)
             throw new FileNotFoundException("File not found", FilePath);
     }
 
-    private static string[] SplitTreeData(string rawTreeData)
-    {
-        // Skip the first element (header) and return the rest
-        return rawTreeData.Split('\0').Skip(1).ToArray();
-    }
-
-    private static List<TreeObjectEntry> ParseTreeEntries(string[] parts)
+    private static List<TreeObjectEntry> ParseTreeEntries(byte[] rawBytes)
     {
         var entries = new List<TreeObjectEntry>();
+        
+        // Skip past "tree <size>\0" header
+        var position = FindHeaderEnd(rawBytes);
 
-        for (var index = 0; index < parts.Length - 1; index++)
+        while (position < rawBytes.Length)
         {
-            var entry = ParseSingleEntry(parts, index);
+            var entry = ParseSingleEntry(rawBytes, ref position);
             if (entry != null)
                 entries.Add(entry);
         }
@@ -46,18 +39,44 @@ public class TreeObject(ShaOne sha1) : GitObject(sha1)
         return entries;
     }
 
-    private static TreeObjectEntry? ParseSingleEntry(string[] parts, int index)
+    private static int FindHeaderEnd(byte[] rawBytes)
     {
-        var modeAndName = parts[index];
-        var shaBytes = parts[index + 1];
+        // Find the first null byte (end of "tree <size>" header)
+        for (var i = 0; i < rawBytes.Length; i++)
+        {
+            if (rawBytes[i] == 0)
+                return i + 1;
+        }
+        return 0;
+    }
 
-        var tokens = modeAndName.Split(' ');
+    private static TreeObjectEntry? ParseSingleEntry(byte[] rawBytes, ref int position)
+    {
+        if (position >= rawBytes.Length)
+            return null;
+
+        // Read mode and name until null byte
+        var modeAndNameEnd = FindNextNullByte(rawBytes, position);
+        if (modeAndNameEnd == -1 || modeAndNameEnd + SHA_BYTE_LENGTH > rawBytes.Length)
+            return null;
+
+        var modeAndNameBytes = rawBytes[position..modeAndNameEnd];
+        var modeAndName = System.Text.Encoding.UTF8.GetString(modeAndNameBytes);
+        
+        var tokens = modeAndName.Split(' ', 2);
         if (tokens.Length < 2)
             return null;
 
-        var mode = ParseMode(tokens[0], index);
+        var mode = ParseMode(tokens[0]);
         var name = tokens[1];
-        var sha = ExtractSha(shaBytes);
+
+        // Read the 20-byte SHA immediately after the null byte
+        var shaStart = modeAndNameEnd + 1;
+        var shaBytes = rawBytes[shaStart..(shaStart + SHA_BYTE_LENGTH)];
+        var sha = ShaOne.ParseFromBytes(shaBytes);
+
+        // Move position past this entry
+        position = shaStart + SHA_BYTE_LENGTH;
 
         return new TreeObjectEntry
         {
@@ -67,25 +86,19 @@ public class TreeObject(ShaOne sha1) : GitObject(sha1)
         };
     }
 
-    private static TreeObjectMode ParseMode(string rawModeToken, int index)
+    private static int FindNextNullByte(byte[] bytes, int startPosition)
     {
-        // Special handling for first entry: strip SHA prefix if present
-        var modeToken = index == 0
-            ? rawModeToken
-            : (rawModeToken.Length > SHA_BYTE_LENGTH 
-                ? rawModeToken[SHA_BYTE_LENGTH..] 
-                : rawModeToken);
-
-        Enum.TryParse(modeToken, out TreeObjectMode parsedMode);
-        return parsedMode;
+        for (var i = startPosition; i < bytes.Length; i++)
+        {
+            if (bytes[i] == 0)
+                return i;
+        }
+        return -1;
     }
 
-    private static ShaOne ExtractSha(string blobPart)
+    private static TreeObjectMode ParseMode(string modeToken)
     {
-        var shaBase64Segment = blobPart.Length >= SHA_BYTE_LENGTH 
-            ? blobPart[..SHA_BYTE_LENGTH] 
-            : blobPart;
-            
-        return ShaOne.ParseFromBase64(shaBase64Segment);
+        Enum.TryParse(modeToken, out TreeObjectMode parsedMode);
+        return parsedMode;
     }
 }

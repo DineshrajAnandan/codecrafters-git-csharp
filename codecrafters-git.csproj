@@ -8,4 +8,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Include="bin\Debug\net9.0\.git\objects\0b\ls-tree.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="bin\Debug\net9.0\.git\objects\0b\a060ffb696c73d7ab8a0eb7a75088b6cd326c2" />
+  </ItemGroup>
+
 </Project>

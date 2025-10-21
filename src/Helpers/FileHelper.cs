@@ -44,4 +44,9 @@ public class FileHelper
     {
         return ZlibHelper.DecompressFile(path);
     }
+    
+    public static byte[] GetBytesFromZLib(string path)
+    {
+        return ZlibHelper.DecompressFileAsBytes(path);
+    }
 }
