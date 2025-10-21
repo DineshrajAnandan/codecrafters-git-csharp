@@ -18,6 +18,13 @@ public class LsTreeCommand
                 Console.WriteLine(entry.Name);
             }
         }
+        else
+        {
+            foreach (var entry in entries)
+            {
+                Console.WriteLine($"{entry.Mode} {EnumExtensions.GetDescription(entry.Mode)} {entry.Sha1} {entry.Name}");
+            }
+        }
     }
 
     private (ShaOne sha1, LsTreeOption option) ParseArgs(string[] args)
