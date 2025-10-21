@@ -32,7 +32,6 @@ if (command == "cat-file")
     var filePath = Path.Combine(".git/objects", dirName, fileName);
     var fileBytes = FileHelper.ReadAllBytes(filePath);
     var content = ZlibHelper.DecompressZlib(fileBytes);
-    Console.Write("\n");
     Console.Write(content.Split('\0').Last());
     
 }
