@@ -33,7 +33,7 @@ public class BlobObject
         var sha1 = ShaHelper.CalculateSha1(objectContent);
         var blobObject = new BlobObject(sha1);
         FileHelper.CreateDirectories(blobObject.DirPath);
-        FileHelper.WriteAsZLib(blobObject.DirPath, objectContent);
+        FileHelper.WriteAsZLib(blobObject.FilePath, objectContent);
         return blobObject;
     }
     
