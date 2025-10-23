@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using codecrafters_git.Extentions;
 using codecrafters_git.Models;
+using codecrafters_git.Models.Objects;
 
 namespace codecrafters_git.Commands;
 
@@ -22,7 +23,7 @@ public class LsTreeCommand
         {
             foreach (var entry in entries)
             {
-                Console.WriteLine($"{entry.Mode} {EnumExtensions.GetDescription(entry.Mode)} {entry.Sha1} {entry.Name}");
+                Console.WriteLine($"{entry.Mode} {entry.Mode.GetDescription()} {entry.Sha1} {entry.Name}");
             }
         }
     }

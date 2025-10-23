@@ -1,28 +1,13 @@
 using codecrafters_git.Enums;
-using codecrafters_git.Helpers;
+using codecrafters_git.Models;
 
-namespace codecrafters_git.Models;
+namespace codecrafters_git.Helpers;
 
-public class TreeObject(ShaOne sha1) : GitObject(sha1)
+public class TreeObjectEntryHelper
 {
     private const int SHA_BYTE_LENGTH = 20;
     
-    public List<TreeObjectEntry> GetContent()
-    {
-        ValidateFileExists();
-        
-        var rawBytes = FileHelper.GetBytesFromZLib(FilePath);
-        
-        return ParseTreeEntries(rawBytes);
-    }
-
-    private void ValidateFileExists()
-    {
-        if (!FileHelper.Exists(FilePath))
-            throw new FileNotFoundException("File not found", FilePath);
-    }
-
-    private static List<TreeObjectEntry> ParseTreeEntries(byte[] rawBytes)
+    public static List<TreeObjectEntry> ParseTreeEntries(byte[] rawBytes)
     {
         var entries = new List<TreeObjectEntry>();
         

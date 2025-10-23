@@ -1,7 +1,6 @@
-using codecrafters_git.Extentions;
 using codecrafters_git.Helpers;
 
-namespace codecrafters_git.Models;
+namespace codecrafters_git.Models.Objects;
 
 public class BlobObject(ShaOne sha1) : GitObject(sha1)
 {

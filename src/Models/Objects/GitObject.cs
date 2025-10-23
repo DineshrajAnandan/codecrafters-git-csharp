@@ -1,4 +1,4 @@
-namespace codecrafters_git.Models;
+namespace codecrafters_git.Models.Objects;
 
 public class GitObject
 {
