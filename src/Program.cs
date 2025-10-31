@@ -23,6 +23,9 @@ switch (command)
     case "ls-tree":
         new LsTreeCommand().Execute(commandArgs);
         break;
+    case "write-tree":
+        new WriteTreeCommand().Execute(commandArgs);
+        break;
     default:
         throw new ArgumentException($"Unknown command {command}");
 }

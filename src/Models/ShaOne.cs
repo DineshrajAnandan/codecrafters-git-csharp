@@ -21,6 +21,15 @@ public class ShaOne
         return _value;
     }
 
+    public string AsBase64()
+    {
+        var sha1Hex = _value;
+        var bytes = Enumerable.Range(0, sha1Hex.Length / 2)
+            .Select(i => Convert.ToByte(sha1Hex.Substring(i * 2, 2), 16))
+            .ToArray();
+        return Convert.ToBase64String(bytes);
+    }
+
     public static bool IsSha1(string value)
     {
         return value.Length == ValueLength;
