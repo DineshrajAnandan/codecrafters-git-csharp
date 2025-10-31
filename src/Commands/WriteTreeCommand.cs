@@ -28,7 +28,7 @@ public class WriteTreeCommand
             treeObjectEntries.Add(new TreeObjectEntry
             {
                 Mode = TreeObjectMode.Directory,
-                Name = subDirectory,
+                Name = Path.GetDirectoryName(subDirectory)!,
                 Sha1 = subDirectoryResult
             });
         }
@@ -39,7 +39,7 @@ public class WriteTreeCommand
             treeObjectEntries.Add(new TreeObjectEntry
             {
                 Mode = TreeObjectMode.File,
-                Name = file,
+                Name = Path.GetFileName(file),
                 Sha1 = fileResult
             });
         }
@@ -58,7 +58,7 @@ public class WriteTreeCommand
         var sb = new StringBuilder();
         foreach (var treeObjectEntry in treeObjectEntries)
         {
-            sb.Append(treeObjectEntry.Mode);
+            sb.Append((int)treeObjectEntry.Mode);
             sb.Append(' ');
             sb.Append(treeObjectEntry.Name);
             sb.Append('\0');
