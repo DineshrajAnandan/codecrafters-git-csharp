@@ -1,5 +1,6 @@
 using System.Text;
 using codecrafters_git.Enums;
+using codecrafters_git.Helpers;
 using codecrafters_git.Models;
 using codecrafters_git.Models.Objects;
 
@@ -21,6 +22,8 @@ public class WriteTreeCommand
         
         foreach (var subDirectory in subDirectories)
         {
+            if(subDirectory.EndsWith(".git"))
+                continue;
             var subDirectoryResult = CreateTreeObject(subDirectory);
             treeObjectEntries.Add(new TreeObjectEntry
             {
@@ -41,8 +44,7 @@ public class WriteTreeCommand
             });
         }
         
-        var data = GetTreeObjectFileData(treeObjectEntries);
-        return ShaOne.CalculateFromText(data);
+        return GetTreeObjectFileData(treeObjectEntries);
     }
 
     private ShaOne CreateBlobObject(string file)
@@ -51,7 +53,7 @@ public class WriteTreeCommand
         return blobObject.Sha1;
     }
 
-    private string GetTreeObjectFileData(List<TreeObjectEntry>  treeObjectEntries)
+    private ShaOne GetTreeObjectFileData(List<TreeObjectEntry>  treeObjectEntries)
     {
         var sb = new StringBuilder();
         foreach (var treeObjectEntry in treeObjectEntries)
@@ -64,6 +66,11 @@ public class WriteTreeCommand
         }
         var data = sb.ToString();
         
-        return $"tree {data.Length}\0{data}";
+        var fileContent =  $"tree {data.Length}\0{data}";
+        var shaOne = ShaOne.CalculateFromText(data);
+        var treeObject = new TreeObject(shaOne);
+        FileHelper.CreateDirectories(treeObject.DirPath);
+        FileHelper.WriteAsZLib(treeObject.FilePath, fileContent);
+        return shaOne;
     }
 }
