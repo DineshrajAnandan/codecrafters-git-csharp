@@ -1,11 +1,13 @@
 using System.ComponentModel;
+using codecrafters_git.Commands.Base;
 using codecrafters_git.Extentions;
 using codecrafters_git.Models;
 using codecrafters_git.Models.Objects;
 
 namespace codecrafters_git.Commands;
 
-public class LsTreeCommand
+[Command("ls-tree")]
+public class LsTreeCommand: ICommand
 {
     public void Execute(string[] args)
     {

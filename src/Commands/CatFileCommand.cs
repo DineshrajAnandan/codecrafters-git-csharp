@@ -1,9 +1,11 @@
+using codecrafters_git.Commands.Base;
 using codecrafters_git.Models;
 using codecrafters_git.Models.Objects;
 
 namespace codecrafters_git.Commands;
 
-public class CatFileCommand
+[Command("cat-file")]
+public class CatFileCommand: ICommand
 {
     public void Execute(string[] args)
     {

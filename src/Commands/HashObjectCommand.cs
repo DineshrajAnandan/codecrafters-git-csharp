@@ -1,8 +1,10 @@
+using codecrafters_git.Commands.Base;
 using codecrafters_git.Models.Objects;
 
 namespace codecrafters_git.Commands;
 
-public class HashObjectCommand
+[Command("hash-object")]
+public class HashObjectCommand: ICommand
 {
     public void Execute(string[] args)
     {

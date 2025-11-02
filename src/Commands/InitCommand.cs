@@ -1,9 +1,11 @@
+using codecrafters_git.Commands.Base;
 using codecrafters_git.Helpers;
 using codecrafters_git.Models;
 
 namespace codecrafters_git.Commands;
 
-public class InitCommand
+[Command("init")]
+public class InitCommand: ICommand
 {
     private static readonly string[] DirectoriesToCreate = [
         ".git",

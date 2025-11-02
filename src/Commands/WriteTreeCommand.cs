@@ -1,8 +1,10 @@
+using codecrafters_git.Commands.Base;
 using codecrafters_git.Models.Objects;
 
 namespace codecrafters_git.Commands;
 
-public class WriteTreeCommand
+[Command("write-tree")]
+public class WriteTreeCommand: ICommand
 {
     public void Execute(string[] _)
     {
