@@ -100,11 +100,12 @@ public class WriteTreeCommand
         }
         
         var fileContent = Encoding.ASCII.GetBytes($"tree {treeObjectBody.Length}\0");
+        var data = fileContent.Concat(treeObjectBody.ToArray()).ToArray();
         
-        var shaOne = ShaOne.CalculateFromBytes(treeObjectBody.ToArray());
+        var shaOne = ShaOne.CalculateFromBytes(data);
         var treeObject = new TreeObject(shaOne);
         FileHelper.CreateDirectories(treeObject.DirPath);
-        FileHelper.WriteAsZLib(treeObject.FilePath, fileContent.Concat(treeObjectBody.ToArray()).ToArray());
+        FileHelper.WriteAsZLib(treeObject.FilePath, data);
         return shaOne;
     }
     
