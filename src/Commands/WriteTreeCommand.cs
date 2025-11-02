@@ -72,20 +72,12 @@ public class WriteTreeCommand
         
         var fileContent = Encoding.UTF8.GetBytes($"tree {data.Length}\0");
         
-        /////////
-        var sb = new StringBuilder();
-        foreach (var b in bytes)
-        {
-            sb.Append(b.ToString("x2"));
-        }
-        Console.WriteLine(sb.ToString());
-        ///////
         
         
         var shaOne = ShaOne.CalculateFromBytes(data);
         var treeObject = new TreeObject(shaOne);
         FileHelper.CreateDirectories(treeObject.DirPath);
-        FileHelper.WriteAsZLib(treeObject.FilePath, fileContent);
+        FileHelper.WriteAsZLib(treeObject.FilePath, fileContent.Concat(data).ToArray());
         return shaOne;
     }
     
