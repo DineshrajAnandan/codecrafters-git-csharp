@@ -16,38 +16,70 @@ public class WriteTreeCommand
 
     private ShaOne CreateTreeObject(string currentDirectory)
     {
-        var files = Directory.GetFiles(currentDirectory);
-        var subDirectories = Directory.GetDirectories(currentDirectory);
-        var directoryEntries = new List<TreeObjectEntry>();
+        var directoryInfo = new DirectoryInfo(currentDirectory);
+        var entries = directoryInfo.GetFileSystemInfos();
+        entries = entries.OrderBy(x => x.Name).ToArray();
+        var resultEntries = new List<TreeObjectEntry>();
+
+        foreach (var entry in entries)
+        {
+            if (entry is DirectoryInfo)
+            {
+                if(entry.Name.EndsWith(".git"))
+                    continue;
+                var subDirectoryResult = CreateTreeObject(entry.FullName);
+                resultEntries.Add(new TreeObjectEntry
+                {
+                    Mode = TreeObjectMode.Directory,
+                    Name = Path.GetFileName(entry.Name),
+                    Sha1 = subDirectoryResult
+                });
+            }
+            else
+            {
+                var fileResult = CreateBlobObject(entry.FullName);
+                resultEntries.Add(new TreeObjectEntry
+                {
+                    Mode = TreeObjectMode.File,
+                    Name = Path.GetFileName(entry.Name),
+                    Sha1 = fileResult
+                });
+            }
+        }
         
-        foreach (var subDirectory in subDirectories)
-        {
-            if(subDirectory.EndsWith(".git"))
-                continue;
-            var subDirectoryResult = CreateTreeObject(subDirectory);
-            directoryEntries.Add(new TreeObjectEntry
-            {
-                Mode = TreeObjectMode.Directory,
-                Name = Path.GetFileName(subDirectory),
-                Sha1 = subDirectoryResult
-            });
-            // Console.WriteLine(subDirectory);
-        }
-        var fileEntries = new List<TreeObjectEntry>();
-        foreach (var file in files)
-        {
-            var fileResult = CreateBlobObject(file);
-            fileEntries.Add(new TreeObjectEntry
-            {
-                Mode = TreeObjectMode.File,
-                Name = Path.GetFileName(file),
-                Sha1 = fileResult
-            });
-            // Console.WriteLine(file);
-        }
+        
+        // var files = Directory.GetFiles(currentDirectory);
+        // var subDirectories = Directory.GetDirectories(currentDirectory);
+        // var directoryEntries = new List<TreeObjectEntry>();
+        //
+        // foreach (var subDirectory in subDirectories)
+        // {
+        //     if(subDirectory.EndsWith(".git"))
+        //         continue;
+        //     var subDirectoryResult = CreateTreeObject(subDirectory);
+        //     directoryEntries.Add(new TreeObjectEntry
+        //     {
+        //         Mode = TreeObjectMode.Directory,
+        //         Name = Path.GetFileName(subDirectory),
+        //         Sha1 = subDirectoryResult
+        //     });
+        //     // Console.WriteLine(subDirectory);
+        // }
+        // var fileEntries = new List<TreeObjectEntry>();
+        // foreach (var file in files)
+        // {
+        //     var fileResult = CreateBlobObject(file);
+        //     fileEntries.Add(new TreeObjectEntry
+        //     {
+        //         Mode = TreeObjectMode.File,
+        //         Name = Path.GetFileName(file),
+        //         Sha1 = fileResult
+        //     });
+        //     // Console.WriteLine(file);
+        // }
         // directoryEntries.Sort((a, b) => String.Compare(a.Name, b.Name, StringComparison.Ordinal));
         // fileEntries.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
-        return GetTreeObjectFileData([..directoryEntries,..fileEntries]);
+        return GetTreeObjectFileData(resultEntries);
     }
 
     private ShaOne CreateBlobObject(string file)
