@@ -32,7 +32,7 @@ public class CommitTreeCommand: ICommand
         var secondsSinceEpoch = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
         sb.Append($"\nauthor {AuthorName} <{AuthorEmail}> {secondsSinceEpoch} +0000");
         sb.Append($"\ncommitter {CommitterName} <{CommitterEmail}> {secondsSinceEpoch} +0000");
-        sb.Append($"\n\n{message}");
+        sb.Append($"\n\n{message}\n");
         
         var body = sb.ToString();
         var content = $"commit {body.Length}\0{body}";
