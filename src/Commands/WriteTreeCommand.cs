@@ -31,6 +31,7 @@ public class WriteTreeCommand
                 Name = Path.GetDirectoryName(subDirectory)!,
                 Sha1 = subDirectoryResult
             });
+            Console.WriteLine(subDirectory);
         }
         var fileEntries = new List<TreeObjectEntry>();
         foreach (var file in files)
@@ -42,6 +43,7 @@ public class WriteTreeCommand
                 Name = Path.GetFileName(file),
                 Sha1 = fileResult
             });
+            Console.WriteLine(file);
         }
         directoryEntries.Sort((a, b) => String.Compare(a.Name, b.Name, StringComparison.Ordinal));
         fileEntries.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
