@@ -21,13 +21,12 @@ public class ShaOne
         return _value;
     }
 
-    public string AsBase64()
+    public byte[] AsBytes()
     {
         var sha1Hex = _value;
-        var bytes = Enumerable.Range(0, sha1Hex.Length / 2)
+        return Enumerable.Range(0, sha1Hex.Length / 2)
             .Select(i => Convert.ToByte(sha1Hex.Substring(i * 2, 2), 16))
             .ToArray();
-        return Convert.ToBase64String(bytes);
     }
 
     public static bool IsSha1(string value)
@@ -38,6 +37,13 @@ public class ShaOne
     public static ShaOne CalculateFromText(string text)
     {
         var data = Encoding.UTF8.GetBytes(text);
+        using var sha1 = SHA1.Create();
+        var hashBytes = sha1.ComputeHash(data);
+        return Parse(hashBytes);
+    }
+    
+    public static ShaOne CalculateFromBytes(byte[] data)
+    {
         using var sha1 = SHA1.Create();
         var hashBytes = sha1.ComputeHash(data);
         return Parse(hashBytes);

@@ -33,6 +33,11 @@ public class ZlibHelper
     public static void CompressToFile(string filePath, string textToCompress)
     {
         var inputBytes = Encoding.UTF8.GetBytes(textToCompress);
+        CompressToFile(filePath, inputBytes);
+    }
+    
+    public static void CompressToFile(string filePath, byte[] inputBytes)
+    {
         using var fileStream = new FileStream(filePath, FileMode.Create);
         using var compressionStream = new ZLibStream(fileStream, CompressionMode.Compress) ;
         compressionStream.Write(inputBytes, 0, inputBytes.Length);

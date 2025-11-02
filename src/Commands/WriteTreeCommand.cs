@@ -58,22 +58,45 @@ public class WriteTreeCommand
 
     private ShaOne GetTreeObjectFileData(List<TreeObjectEntry>  treeObjectEntries)
     {
-        var sb = new StringBuilder();
+        var bytes = new List<byte>();
         foreach (var treeObjectEntry in treeObjectEntries)
         {
-            sb.Append((int)treeObjectEntry.Mode);
-            sb.Append(' ');
-            sb.Append(treeObjectEntry.Name);
-            sb.Append('\0');
-            sb.Append(treeObjectEntry.Sha1.AsBase64());
+            var mode = BitConverter.GetBytes((int)treeObjectEntry.Mode);
+            var name = Encoding.UTF8.GetBytes($" {treeObjectEntry.Name}\0");
+            var sha = treeObjectEntry.Sha1.AsBytes();
+            bytes.AddRange(mode);
+            bytes.AddRange(name);
+            bytes.AddRange(sha);
         }
-        var data = sb.ToString();
+        var data = bytes.ToArray();
         
-        var fileContent =  $"tree {data.Length}\0{data}";
-        var shaOne = ShaOne.CalculateFromText(data);
+        var fileContent = Encoding.UTF8.GetBytes($"tree {data.Length}\0");
+        
+        var shaOne = ShaOne.CalculateFromBytes(data);
         var treeObject = new TreeObject(shaOne);
         FileHelper.CreateDirectories(treeObject.DirPath);
         FileHelper.WriteAsZLib(treeObject.FilePath, fileContent);
         return shaOne;
     }
+    
+    // private ShaOne GetTreeObjectFileData(List<TreeObjectEntry>  treeObjectEntries)
+    // {
+    //     var sb = new StringBuilder();
+    //     foreach (var treeObjectEntry in treeObjectEntries)
+    //     {
+    //         sb.Append((int)treeObjectEntry.Mode);
+    //         sb.Append(' ');
+    //         sb.Append(treeObjectEntry.Name);
+    //         sb.Append('\0');
+    //         sb.Append(treeObjectEntry.Sha1.AsBase64());
+    //     }
+    //     var data = sb.ToString();
+    //     
+    //     var fileContent =  $"tree {data.Length}\0{data}";
+    //     var shaOne = ShaOne.CalculateFromText(data);
+    //     var treeObject = new TreeObject(shaOne);
+    //     FileHelper.CreateDirectories(treeObject.DirPath);
+    //     FileHelper.WriteAsZLib(treeObject.FilePath, fileContent);
+    //     return shaOne;
+    // }
 }

@@ -40,6 +40,11 @@ public class FileHelper
         ZlibHelper.CompressToFile(path, content);
     }
     
+    public static void WriteAsZLib(string path, byte[] inputBytes)
+    {
+        ZlibHelper.CompressToFile(path, inputBytes);
+    }
+    
     public static string GetContentFromZLib(string path)
     {
         return ZlibHelper.DecompressFile(path);
