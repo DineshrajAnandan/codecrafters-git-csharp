@@ -12,19 +12,13 @@ public class LsTreeCommand
         var (sha1, option) = ParseArgs(args);
         var treeObject = new TreeObject(sha1);
         var entries = treeObject.GetContent();
-        if (option == LsTreeOption.NameOnly)
+        
+        foreach (var entry in entries)
         {
-            foreach (var entry in entries)
-            {
-                Console.WriteLine(entry.Name);
-            }
-        }
-        else
-        {
-            foreach (var entry in entries)
-            {
-                Console.WriteLine($"{entry.Mode} {entry.Mode.GetDescription()} {entry.Sha1} {entry.Name}");
-            }
+            var lineOutput = option == LsTreeOption.NameOnly
+                ? entry.Name
+                : $"{entry.Mode} {entry.Mode.GetDescription()} {entry.Sha1} {entry.Name}";
+            Console.WriteLine(lineOutput);
         }
     }
 

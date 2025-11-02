@@ -12,7 +12,7 @@ public class BlobObject(ShaOne sha1) : GitObject(sha1)
         return data.Split('\0').Last();
     }
     
-    public static BlobObject CreateFromFile(string filePath)
+    public static BlobObject Create(string filePath)
     {
         var content = FileHelper.GetContent(filePath);
         var objectContent = $"blob {content.Length}\0{content}";

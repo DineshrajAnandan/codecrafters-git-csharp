@@ -37,9 +37,7 @@ public class ShaOne
     public static ShaOne CalculateFromText(string text)
     {
         var data = Encoding.UTF8.GetBytes(text);
-        using var sha1 = SHA1.Create();
-        var hashBytes = sha1.ComputeHash(data);
-        return Parse(hashBytes);
+        return CalculateFromBytes(data);
     }
     
     public static ShaOne CalculateFromBytes(byte[] data)

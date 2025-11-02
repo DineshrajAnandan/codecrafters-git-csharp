@@ -17,6 +17,13 @@ public class FileHelper
         return File.ReadAllText(filePath);
     }
 
+    public static FileSystemInfo[] GetFileSystemInfos(string directory)
+    {
+        var directoryInfo = new DirectoryInfo(directory);
+        var entries = directoryInfo.GetFileSystemInfos();
+        return entries.OrderBy(x => x.Name).ToArray();
+    }
+
     public static void CreateDirectories(params string[] paths)
     {
         foreach (var path in paths)
