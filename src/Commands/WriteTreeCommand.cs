@@ -61,7 +61,7 @@ public class WriteTreeCommand
         var bytes = new List<byte>();
         foreach (var treeObjectEntry in treeObjectEntries)
         {
-            var mode = BitConverter.GetBytes((int)treeObjectEntry.Mode);
+            var mode = Encoding.UTF8.GetBytes(((int)treeObjectEntry.Mode).ToString());
             var name = Encoding.UTF8.GetBytes($" {treeObjectEntry.Name}\0");
             var sha = treeObjectEntry.Sha1.AsBytes();
             bytes.AddRange(mode);
