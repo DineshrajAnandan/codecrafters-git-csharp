@@ -90,26 +90,21 @@ public class WriteTreeCommand
 
     private ShaOne GetTreeObjectFileData(List<TreeObjectEntry>  treeObjectEntries)
     {
-        var bytes = new List<byte>();
+        using var treeObjectBody = new MemoryStream();
         foreach (var treeObjectEntry in treeObjectEntries)
         {
-            var mode = Encoding.UTF8.GetBytes(((int)treeObjectEntry.Mode).ToString());
-            var name = Encoding.UTF8.GetBytes($" {treeObjectEntry.Name}\0");
+            var treeObjectRow = Encoding.ASCII.GetBytes($"{(int)treeObjectEntry.Mode} {treeObjectEntry.Name}\0");
             var sha = treeObjectEntry.Sha1.AsBytes();
-            bytes.AddRange(mode);
-            bytes.AddRange(name);
-            bytes.AddRange(sha);
+            byte[] rowBytes = [..treeObjectRow, ..sha];
+            treeObjectBody.Write(rowBytes, 0, rowBytes.Length);
         }
-        var data = bytes.ToArray();
         
-        var fileContent = Encoding.UTF8.GetBytes($"tree {data.Length}\0");
+        var fileContent = Encoding.ASCII.GetBytes($"tree {treeObjectBody.Length}\0");
         
-        
-        
-        var shaOne = ShaOne.CalculateFromBytes(data);
+        var shaOne = ShaOne.CalculateFromBytes(treeObjectBody.ToArray());
         var treeObject = new TreeObject(shaOne);
         FileHelper.CreateDirectories(treeObject.DirPath);
-        FileHelper.WriteAsZLib(treeObject.FilePath, fileContent.Concat(data).ToArray());
+        FileHelper.WriteAsZLib(treeObject.FilePath, fileContent.Concat(treeObjectBody.ToArray()).ToArray());
         return shaOne;
     }
     
