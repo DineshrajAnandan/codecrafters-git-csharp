@@ -28,10 +28,10 @@ public class WriteTreeCommand
             directoryEntries.Add(new TreeObjectEntry
             {
                 Mode = TreeObjectMode.Directory,
-                Name = Path.GetDirectoryName(subDirectory)!,
+                Name = Path.GetFileName(subDirectory),
                 Sha1 = subDirectoryResult
             });
-            Console.WriteLine(subDirectory);
+            // Console.WriteLine(subDirectory);
         }
         var fileEntries = new List<TreeObjectEntry>();
         foreach (var file in files)
@@ -43,7 +43,7 @@ public class WriteTreeCommand
                 Name = Path.GetFileName(file),
                 Sha1 = fileResult
             });
-            Console.WriteLine(file);
+            // Console.WriteLine(file);
         }
         directoryEntries.Sort((a, b) => String.Compare(a.Name, b.Name, StringComparison.Ordinal));
         fileEntries.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
