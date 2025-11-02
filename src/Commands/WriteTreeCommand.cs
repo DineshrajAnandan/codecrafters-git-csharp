@@ -45,8 +45,8 @@ public class WriteTreeCommand
             });
             // Console.WriteLine(file);
         }
-        directoryEntries.Sort((a, b) => String.Compare(a.Name, b.Name, StringComparison.Ordinal));
-        fileEntries.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+        // directoryEntries.Sort((a, b) => String.Compare(a.Name, b.Name, StringComparison.Ordinal));
+        // fileEntries.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
         return GetTreeObjectFileData([..directoryEntries,..fileEntries]);
     }
 
