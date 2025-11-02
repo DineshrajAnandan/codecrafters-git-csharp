@@ -18,33 +18,34 @@ public class WriteTreeCommand
     {
         var files = Directory.GetFiles(currentDirectory);
         var subDirectories = Directory.GetDirectories(currentDirectory);
-        var treeObjectEntries = new List<TreeObjectEntry>();
+        var directoryEntries = new List<TreeObjectEntry>();
         
         foreach (var subDirectory in subDirectories)
         {
             if(subDirectory.EndsWith(".git"))
                 continue;
             var subDirectoryResult = CreateTreeObject(subDirectory);
-            treeObjectEntries.Add(new TreeObjectEntry
+            directoryEntries.Add(new TreeObjectEntry
             {
                 Mode = TreeObjectMode.Directory,
                 Name = Path.GetDirectoryName(subDirectory)!,
                 Sha1 = subDirectoryResult
             });
         }
-        
+        var fileEntries = new List<TreeObjectEntry>();
         foreach (var file in files)
         {
             var fileResult = CreateBlobObject(file);
-            treeObjectEntries.Add(new TreeObjectEntry
+            fileEntries.Add(new TreeObjectEntry
             {
                 Mode = TreeObjectMode.File,
                 Name = Path.GetFileName(file),
                 Sha1 = fileResult
             });
         }
-        
-        return GetTreeObjectFileData(treeObjectEntries);
+        directoryEntries.Sort((a, b) => String.Compare(a.Name, b.Name, StringComparison.Ordinal));
+        fileEntries.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+        return GetTreeObjectFileData([..directoryEntries,..fileEntries]);
     }
 
     private ShaOne CreateBlobObject(string file)
